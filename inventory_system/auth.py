@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, request, session, render_template
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from extensions import db
@@ -44,7 +44,7 @@ def register():
 # Login route
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
+    data = request.form if request.form else request.get_json()
     
     if not all(k in data for k in ['username', 'password']):
         return jsonify({'error': 'Missing credentials'}), 400
@@ -64,3 +64,8 @@ def login():
 def logout():
     session.clear()
     return jsonify({'message': 'Logged out successfully'}), 200
+
+# Login page route
+@auth_bp.route('/login', methods=['GET'])
+def login_page():
+    return render_template('login.html')
