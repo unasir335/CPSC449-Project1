@@ -52,7 +52,11 @@ def login():
     user = User.query.filter_by(username=data['username']).first()
     
     if user and check_password_hash(user.password, data['password']):
+        #remove all preexisting session data
+        session.clear()
         session.permanent = True
+        
+        #after cclearing the session, the user id of the authenticated user is stored in the session. 
         session['user_id'] = user.id
         return jsonify({'message': 'Logged in successfully'}), 200
     
