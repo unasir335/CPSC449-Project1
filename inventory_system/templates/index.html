@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Website</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS file -->
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Welcome to My Backend Project</h1>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Beautiful and Minimal Design</h1>
+        <p>place holder</p>
+    </section>
+
+    <!-- Main Content Section -->
+    <section class="content">
+        <!-- About Card -->
+        <div class="card" id="about">
+            <h2>About Us</h2>
+            <p>This is just a place holder</p>
+        </div>
+
+        <!-- Services Card -->
+        <div class="card" id="services">
+            <h2>Our Services</h2>
+            <p>This is just a place holder</p>
+        </div>
+
+        <!-- Contact Card -->
+        <div class="card" id="contact">
+            <h2>Contact Us</h2>
+            <p>This is just a placeholder</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div class="card" id="auth">
+            <h2>Register</h2>
+            <input id="register-username" type="text" placeholder="Username">
+            <input id="register-password" type="password" placeholder="Password">
+            <input id="register-email" type="email" placeholder="Email">
+            <button onclick="registerUser()">Register</button>
+        </div>
+
+        <!-- Login Section -->
+        <div class="card" id="login">
+            <h2>Login</h2>
+            <input id="login-username" type="text" placeholder="Username">
+            <input id="login-password" type="password" placeholder="Password">
+            <button onclick="loginUser()">Login</button>
+        </div>
+
+        <!-- Inventory Section -->
+        <div class="card" id="inventory">
+            <h2>Inventory</h2>
+            <button onclick="fetchInventory()">View Inventory</button>
+            <pre id="inventoryOutput"></pre>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Color Palette Website. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for API requests -->
+    <script>
+        async function registerUser() {
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('register-username').value,
+                    password: document.getElementById('register-password').value,
+                    email: document.getElementById('register-email').value
+                })
+            });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+
+        async function loginUser() {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('login-username').value,
+                    password: document.getElementById('login-password').value
+                })
+            });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+
+        async function fetchInventory() {
+            const response = await fetch('/inventory', { method: 'GET' });
+            const items = await response.json();
+            document.getElementById('inventoryOutput').innerText = JSON.stringify(items, null, 2);
+        }
+    </script>
+</body>
+</html>
+
