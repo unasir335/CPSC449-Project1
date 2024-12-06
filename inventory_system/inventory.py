@@ -1,11 +1,8 @@
-from flask import Blueprint, jsonify, request, session
-
 from auth import login_required
-from extensions import db, mongo
-from models import InventoryItem
 from bson import ObjectId
-
-
+from extensions import db, mongo
+from flask import Blueprint, jsonify, request, session
+from models import InventoryItem
 
 inventory_bp = Blueprint('inventory', __name__)
 
@@ -79,11 +76,57 @@ def create_mongo_inventory():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#TODO:mongodb - PUT (specific)
-    
-#TODO:mongodb - DELETE (specific)
+#mongodb - PUT (specific)
+@inventory_bp.route('/mongo/inventory/<item_id>', methods=['PUT'])
+def update_mongo_inventory(item_id):
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'User not authenticared'}), 401
+        
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        item = mongo.db.inventory.find_one({"_id": ObjectId(item_id), "user_id": user_id})
+        if not item:
+            return jsonify({'error': 'Item not found'}), 404
+        
+        update_fields = {}
+        if 'name' in data:
+            update_fields['name'] = data['name']
+        if 'description' in data:
+            update_fields['description'] = data['description']
+        if 'quantity' in data:
+            update_fields['quantity'] = data['quantity']
+        if 'price' in data:
+            update_fields['price'] = data['price']
+        
+        mongo.db.inventory.update_one({"_id": ObjectId(item_id)}, {"$set": update_fields})
+        
+        updated_item = mongo.db.inventory.find_one({"_id": ObjectId(item_id)})
+        return jsonify(serialize_mongo_inventory(updated_item))
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
+#mongodb - DELETE (specific)
+@inventory_bp.route('/mongo/inventory/<item_id>', methods=['DELETE'])
+def delete_mongo_inventory(item_id):
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'User not authenticared'}), 401
+        
+        item = mongo.db.inventory.find_one({"_id": ObjectId(item_id), "user_id": user_id})
+        if not item:
+            return jsonify({'error': 'Item not found'}), 404
+        
+        mongo.db.inventory.delete_one({"_id": ObjectId(item_id)})
+        
+        return jsonify({'message': 'Item deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 
