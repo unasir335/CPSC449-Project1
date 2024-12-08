@@ -1,1 +1,7 @@
-/venv
+#ignore virtual environment
+/venv|
+
+#ignore test files
+test_api_endpoints.py
+test_db_connections.py
+test_mysql_connection.py

@@ -7,7 +7,7 @@ from models import InventoryItem
 inventory_bp = Blueprint('inventory', __name__)
 
 
-#serializing (converts objectID to string)
+#serializing for MongoDB (converts objectID to string)
 def serialize_mongo_inventory(item):
     """
     Serialize a MongoDB inventory item into JSON-compatible format.
@@ -37,7 +37,7 @@ def get_all_mongo_inventory():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#mongdb - GET (sepcific)
+#mongdb - GET (sepcific ID)
 @inventory_bp.route('/mongo/inventory/<item_id>', methods=['GET'])
 def get_specific_mongo_inventory(item_id):
     try:
@@ -76,7 +76,7 @@ def create_mongo_inventory():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#mongodb - PUT (specific)
+#mongodb - PUT (specific ID)
 @inventory_bp.route('/mongo/inventory/<item_id>', methods=['PUT'])
 def update_mongo_inventory(item_id):
     try:
@@ -110,7 +110,7 @@ def update_mongo_inventory(item_id):
         return jsonify({'error': str(e)}), 500
 
 
-#mongodb - DELETE (specific)
+#mongodb - DELETE (specific ID)
 @inventory_bp.route('/mongo/inventory/<item_id>', methods=['DELETE'])
 def delete_mongo_inventory(item_id):
     try:
@@ -146,7 +146,7 @@ def get_items():
         'created_at': item.created_at.isoformat()
     } for item in items]), 200
 
-#mysql - GET (sepcific)
+#mysql - GET (sepcific ID)
 @inventory_bp.route('/inventory/<int:item_id>', methods=['GET'])
 @login_required
 def get_item(item_id):
@@ -214,7 +214,7 @@ def update_item(item_id):
     return jsonify({'message': 'Item updated successfully'}), 200
 
 
-#mysql - DELETE (specific)
+#mysql - DELETE (specific ID)
 @inventory_bp.route('/inventory/<int:item_id>', methods=['DELETE'])
 @login_required
 def delete_item(item_id):
